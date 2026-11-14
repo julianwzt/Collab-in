@@ -47,29 +47,33 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAADxUtoN-c0meP-eIQa_Sv50lh0u2fQwc',
-    appId: '1:37225093755:web:ebebfca5eaa9174f27a0de',
-    messagingSenderId: '37225093755',
-    projectId: 'synergy-38bc6',
-    authDomain: 'synergy-38bc6.firebaseapp.com',
-    storageBucket: 'synergy-38bc6.firebasestorage.app',
-    measurementId: 'G-LC6DZ9708Q',
+    apiKey: 'AIzaSyCfkOsCjR_6G4IhMaDGxLqBKaxyII5dhLc',
+    appId: '1:797488912133:web:85263c91bbd4b8b19f096c',
+    messagingSenderId: '797488912133',
+    projectId: 'dicollab-f4079',
+    authDomain: 'dicollab-f4079.firebaseapp.com',
+    databaseURL: 'https://dicollab-f4079-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'dicollab-f4079.firebasestorage.app',
+    measurementId: 'G-1881EEFGE3',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD_oIEXD-DzVD2j8h1qsuozxvjc8eXVSjI',
-    appId: '1:37225093755:android:7219b83355b92d3527a0de',
-    messagingSenderId: '37225093755',
-    projectId: 'synergy-38bc6',
-    storageBucket: 'synergy-38bc6.firebasestorage.app',
+    apiKey: 'AIzaSyCXrwFVDv3PU3nm7WnspJkk6JKUbSXrXMM',
+    appId: '1:797488912133:android:84021e5856df5a579f096c',
+    messagingSenderId: '797488912133',
+    projectId: 'dicollab-f4079',
+    databaseURL: 'https://dicollab-f4079-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'dicollab-f4079.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDSPjPV_i81b4BqGCEEWqp-Wk06LSaoMd8',
-    appId: '1:37225093755:ios:f6a067ea50d979eb27a0de',
-    messagingSenderId: '37225093755',
-    projectId: 'synergy-38bc6',
-    storageBucket: 'synergy-38bc6.firebasestorage.app',
-    iosBundleId: 'com.impal.gabungyuk',
+    apiKey: 'AIzaSyBYE6O2ZmT5Km8w-NKjEB3UFMZIMpzuBS8',
+    appId: '1:797488912133:ios:29f24217e660d6b29f096c',
+    messagingSenderId: '797488912133',
+    projectId: 'dicollab-f4079',
+    databaseURL: 'https://dicollab-f4079-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'dicollab-f4079.firebasestorage.app',
+    iosClientId: '797488912133-bqlfa2f9u4g9feoequo7qv4qj2u27l1o.apps.googleusercontent.com',
+    iosBundleId: 'com.impal.collabin',
   );
 }

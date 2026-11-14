@@ -11,13 +11,13 @@ class FirebaseUserSyncHelper {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   String deriveGoogleSecret(String googleUid) {
-    final hash = sha256.convert(utf8.encode('gabungyuk_google_$googleUid'));
+    final hash = sha256.convert(utf8.encode('collabin_google_$googleUid'));
     return '${hash.toString().substring(0, 24)}Ab@1';
   }
 
   /// Hash password untuk disimpan di Firestore
   String hashPassword(String password) {
-    final hash = sha256.convert(utf8.encode('gabungyuk_pwd_$password'));
+    final hash = sha256.convert(utf8.encode('collabin_pwd_$password'));
     return hash.toString();
   }
 

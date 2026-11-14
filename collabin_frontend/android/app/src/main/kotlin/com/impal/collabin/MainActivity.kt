@@ -1,4 +1,4 @@
-package com.impal.gabungyuk
+package com.impal.collabin
 
 import io.flutter.embedding.android.FlutterActivity
 

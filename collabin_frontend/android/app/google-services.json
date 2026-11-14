@@ -1,49 +1,35 @@
 {
   "project_info": {
-    "project_number": "37225093755",
-    "project_id": "synergy-38bc6",
-    "storage_bucket": "synergy-38bc6.firebasestorage.app"
+    "project_number": "797488912133",
+    "firebase_url": "https://dicollab-f4079-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "dicollab-f4079",
+    "storage_bucket": "dicollab-f4079.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:37225093755:android:7219b83355b92d3527a0de",
+        "mobilesdk_app_id": "1:797488912133:android:84021e5856df5a579f096c",
         "android_client_info": {
-          "package_name": "com.impal.gabungyuk"
+          "package_name": "com.impal.collabin"
         }
       },
       "oauth_client": [
         {
-          "client_id": "37225093755-v8hr04ibf805gmsqvts146gvp0ts7sf0.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.impal.gabungyuk",
-            "certificate_hash": "1bec789e0bf747b007846cfe18476f30087c1a99"
-          }
-        },
-        {
-          "client_id": "37225093755-t5bv18tmmr38gf0lcga4m5n28u21ajpi.apps.googleusercontent.com",
+          "client_id": "797488912133-68c81622h69rhdudhog5ih6i2lrkeom1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD_oIEXD-DzVD2j8h1qsuozxvjc8eXVSjI"
+          "current_key": "AIzaSyCXrwFVDv3PU3nm7WnspJkk6JKUbSXrXMM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "37225093755-t5bv18tmmr38gf0lcga4m5n28u21ajpi.apps.googleusercontent.com",
+              "client_id": "797488912133-68c81622h69rhdudhog5ih6i2lrkeom1.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "37225093755-717v3sf04c59gtjd2iuj9k4i0gplebf3.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.impal.gabungyuk"
-              }
             }
           ]
         }
