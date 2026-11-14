@@ -1,0 +1,18 @@
+package com.impal.collabin.profile.model.request;
+import lombok.Data;
+@Data
+
+public class ProfileRequest {
+    private Integer idPengguna;
+    private String profilePicture; 
+    private String namaLengkap;
+    private String email;
+    private String institusi;
+    private String bio;
+    private String keahlian;
+    private String lokasi;
+    private String whatsapp;
+    private String instagram;
+    private String facebook;
+    private String linkedin;
+}
