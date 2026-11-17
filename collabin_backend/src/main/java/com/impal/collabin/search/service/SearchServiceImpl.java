@@ -1,0 +1,94 @@
+package com.impal.collabin.search.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+
+import com.impal.collabin.auth.entity.User;
+import com.impal.collabin.auth.respository.UserRepository;
+import com.impal.collabin.core.service.TokenService;
+import com.impal.collabin.core.service.UrlService;
+import com.impal.collabin.core.service.TimezoneService;
+import com.impal.collabin.project.entity.Project;
+import com.impal.collabin.project.respository.ProjectRepository;
+import com.impal.collabin.search.model.response.SearchProjectResponse;
+import com.impal.collabin.search.model.response.SearchResponse;
+import com.impal.collabin.search.model.response.SearchUserResponse;
+
+@Service
+public class SearchServiceImpl implements SearchService {
+
+    private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
+    private final TokenService tokenService;
+    private final TimezoneService timezoneService;
+    private final UrlService urlService;
+
+    public SearchServiceImpl(
+            UserRepository userRepository,
+            ProjectRepository projectRepository,
+            TokenService tokenService,
+            TimezoneService timezoneService,
+            UrlService urlService
+    ) {
+        this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
+        this.tokenService = tokenService;
+        this.timezoneService = timezoneService;
+        this.urlService = urlService;
+    }
+
+    @Override
+    public SearchResponse globalSearch(
+            String authorizationHeader,
+            String query
+    ) {
+
+        Integer userId = tokenService.extractUserIdFromAuthorizationHeader(
+                authorizationHeader
+        );
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "User not found"
+                ));
+        String viewerTz = timezoneService.getUserTimezoneOrDefault(userId);
+
+        List<User> users = userRepository
+                .findByNamaLengkapContainingIgnoreCase(query);
+
+        List<Project> projects = projectRepository
+                .findActiveByTitleContaining(query);
+
+        List<SearchUserResponse> userResponses = users.stream()
+                .map(user -> SearchUserResponse.builder()
+                        .userId(user.getIdPengguna())
+                        .namaLengkap(user.getNamaLengkap())
+                        .profilePicture(urlService.normalizeProfilePictureUrl(user.getProfilePicture()))
+                        .bio(user.getBio())
+                        .institusi(user.getInstitusi())
+                        .build())
+                .toList();
+
+        List<SearchProjectResponse> projectResponses = projects.stream()
+                .map(project -> SearchProjectResponse.builder()
+                        .id(project.getProjectId())
+                        .title(project.getTitle())
+                        .description(project.getDescription())
+                        .category(project.getCategory())
+                        .status(project.getStatus())
+                        .repositoryLink(project.getRepositoryLink())
+                        .projectPicture(project.getFileUrl())
+                        .deadline(timezoneService.convertToUserZone(project.getDeadline(), viewerTz))
+                        .build())
+                .toList();
+
+        return SearchResponse.builder()
+                .users(userResponses)
+                .projects(projectResponses)
+                .build();
+    }
+}
