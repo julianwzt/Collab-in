@@ -1,0 +1,57 @@
+package com.impal.collabin.project.entity;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import com.impal.collabin.auth.entity.User;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "project")
+@Builder
+public class Project {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "project_id")
+    private Integer projectId;
+
+    // foregein key
+    @ManyToOne
+    @JoinColumn(name = "id_pengguna")
+    private User user;
+
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "description", nullable = true)
+    private String description;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "project_category",
+            joinColumns = @JoinColumn(name = "project_id")
+    )
+    @Column(name = "category")
+    private List<String> category;
+
+    @Column(name = "status", nullable = true)
+    private String status;
+
+    @Column(name = "repository_link", nullable = true)
+    private String repositoryLink;
+
+    @Column(name = "file_url", nullable = true)
+    private String fileUrl;
+
+    @Column(name = "created_at", nullable = true)
+    private LocalDateTime createdAt;
+
+    @Column(name = "deadline", nullable = true)
+    private LocalDateTime deadline;
+
+}
