@@ -27,10 +27,17 @@ public class TokenService {
     private EntityManager entityManager;
 
     public TokenService(
-            @Value("${app.auth.token-secret:change-this-secret-in-production}") String tokenSecret,
+            @Value("${app.auth.token-secret:}") String tokenSecret,
             FirebaseAuthService firebaseAuthService,
             UserRepository userRepository
     ) {
+        if (tokenSecret == null || tokenSecret.isBlank()
+                || "change-this-secret-in-production".equals(tokenSecret.trim())) {
+            // Secret bawaan bersifat publik: siapa pun bisa memalsukan token login internal.
+            throw new IllegalStateException(
+                    "app.auth.token-secret belum diatur. Set environment variable APP_AUTH_TOKEN_SECRET "
+                            + "dengan string acak minimal 32 karakter (lihat application.properties.example).");
+        }
         this.tokenSecret = tokenSecret;
         this.firebaseAuthService = firebaseAuthService;
         this.userRepository = userRepository;

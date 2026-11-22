@@ -129,7 +129,7 @@ class _StatusChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFF2F80ED).withValues(alpha: 0.1),
+        color: const Color(0xFFF7941D).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
@@ -137,7 +137,7 @@ class _StatusChip extends StatelessWidget {
         style: const TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w700,
-          color: Color(0xFF2F80ED),
+          color: Color(0xFFF7941D),
         ),
       ),
     );

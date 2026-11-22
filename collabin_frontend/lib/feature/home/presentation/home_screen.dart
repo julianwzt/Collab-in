@@ -42,24 +42,18 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Datum> get _filteredProjects {
     List<Datum> filtered = List.from(_projects);
 
-    // 1. Filter by Category
+    // 1. Filter by Category (pakai kelompok kata kunci agar kategori bebas
+    //    seperti "Flutter" atau "Frontend Development" tetap masuk tab yang benar)
     if (_selectedCategoryIndex != 0) {
-      final category = _categories[_selectedCategoryIndex];
-      filtered = filtered.where((project) {
-        return project.category.any((cat) => cat.toLowerCase().contains(category.toLowerCase()));
-      }).toList();
+      final label = _categories[_selectedCategoryIndex];
+      filtered = filtered.where((project) => _matchesCategory(project, label)).toList();
     }
 
     // 2. Filter by Status
     if (_selectedStatusFilter != 'Semua') {
       filtered = filtered.where((project) {
-        final status = project.status?.toUpperCase();
-        if (_selectedStatusFilter == 'Mencari Rekan') {
-          return status == 'OPEN';
-        } else if (_selectedStatusFilter == 'Selesai') {
-          return status == 'COMPLETED' || status == 'DONE';
-        }
-        return true;
+        final done = _isFinished(project.status);
+        return _selectedStatusFilter == 'Selesai' ? done : !done;
       }).toList();
     }
 
@@ -197,146 +191,278 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  final List<String> _categories = [
+  final List<String> _categories = const [
     'Semua',
     'Mobile Dev',
     'Web Dev',
     'UI/UX Design',
-    'Data Science',
-    'Artificial Intelligence',
+    'Backend',
+    'Data & AI',
+    'Game Dev',
+    'IoT',
     'Cyber Security',
-    'DevOps',
+    'DevOps & Cloud',
   ];
 
+  /// Kata kunci per tab kategori. Dicocokkan ke kategori project
+  /// (huruf kecil). Kata pendek dicocokkan sebagai kata utuh.
+  static const Map<String, List<String>> _categoryKeywords = {
+    'Mobile Dev': ['mobile', 'android', 'ios', 'flutter', 'kotlin', 'swift', 'react native', 'app development'],
+    'Web Dev': ['web', 'frontend', 'front end', 'front-end', 'fullstack', 'full stack', 'laravel', 'react', 'vue', 'next', 'javascript'],
+    'UI/UX Design': ['ui', 'ux', 'design', 'figma', 'desain'],
+    'Backend': ['backend', 'back end', 'back-end', 'api', 'server', 'database', 'fullstack', 'full stack', 'golang', 'spring'],
+    'Data & AI': ['data', 'machine learning', 'ml', 'ai', 'artificial intelligence', 'deep learning', 'nlp', 'natural language', 'computer vision', 'analyst', 'analytics', 'intelligence'],
+    'Game Dev': ['game', 'unity', 'unreal'],
+    'IoT': ['iot', 'internet of things', 'embedded', 'hardware', 'arduino'],
+    'Cyber Security': ['security', 'cyber', 'keamanan'],
+    'DevOps & Cloud': ['devops', 'cloud', 'sre', 'site reliability', 'infrastructure', 'network', 'system administrator'],
+  };
+
+  bool _matchesCategory(Datum project, String label) {
+    final keywords = _categoryKeywords[label] ?? [label.toLowerCase()];
+    return project.category.any((raw) {
+      final cat = raw.toLowerCase();
+      return keywords.any((k) => k.length <= 3
+          ? RegExp('(^|[^a-z])${RegExp.escape(k)}([^a-z]|\$)').hasMatch(cat)
+          : cat.contains(k));
+    });
+  }
+
+  static bool _isFinished(String? status) {
+    final s = status?.toUpperCase() ?? '';
+    return s == 'DONE' || s == 'COMPLETED' || s == 'CLOSED' || s == 'SELESAI';
+  }
+
+  static const List<String> _sortOptions = ['Terbaru', 'Terlama', 'Deadline Terdekat'];
+  static const Map<String, String> _sortHints = {
+    'Terbaru': 'Project yang paling baru dibuat',
+    'Terlama': 'Project yang paling lama dibuat',
+    'Deadline Terdekat': 'Deadline paling dekat di atas',
+  };
+  static const List<String> _statusOptions = ['Semua', 'Mencari Rekan', 'Selesai'];
+  static const Map<String, String> _statusHints = {
+    'Semua': 'Tampilkan semua project',
+    'Mencari Rekan': 'Belum selesai, masih bisa diajukan bergabung',
+    'Selesai': 'Project sudah selesai / berakhir',
+  };
+
+  int get _activeFilterCount =>
+      (_selectedSort != 'Terbaru' ? 1 : 0) + (_selectedStatusFilter != 'Semua' ? 1 : 0);
 
   void _showFilterSheet() {
+    // Pilihan sementara di dalam sheet, baru diterapkan saat "Terapkan".
+    String tempSort = _selectedSort;
+    String tempStatus = _selectedStatusFilter;
+
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            return Container(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Filter Proyek',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: ColorValue.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Urutan',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: ColorValue.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 10,
-                    children: ['Terbaru', 'Terlama', 'Deadline Terdekat'].map((sort) {
-                      final isSelected = _selectedSort == sort;
-                      return ChoiceChip(
-                        label: Text(sort),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          if (selected) {
-                            setModalState(() => _selectedSort = sort);
-                            setState(() => _selectedSort = sort);
-                          }
-                        },
-                        selectedColor: ColorValue.primaryColor.withValues(alpha: 0.1),
-                        backgroundColor: Colors.white,
-                        labelStyle: TextStyle(
-                          color: isSelected ? ColorValue.primaryColor : ColorValue.textSecondary,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(
-                            color: isSelected ? ColorValue.primaryColor : Colors.grey[200]!,
-                          ),
-                        ),
-                        showCheckmark: false,
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Status',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: ColorValue.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 10,
-                    children: ['Semua', 'Mencari Rekan', 'Selesai'].map((status) {
-                      final isSelected = _selectedStatusFilter == status;
-                      return ChoiceChip(
-                        label: Text(status),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          if (selected) {
-                            setModalState(() => _selectedStatusFilter = status);
-                            setState(() => _selectedStatusFilter = status);
-                          }
-                        },
-                        selectedColor: ColorValue.primaryColor.withValues(alpha: 0.1),
-                        backgroundColor: Colors.white,
-                        labelStyle: TextStyle(
-                          color: isSelected ? ColorValue.primaryColor : ColorValue.textSecondary,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(
-                            color: isSelected ? ColorValue.primaryColor : Colors.grey[200]!,
-                          ),
-                        ),
-                        showCheckmark: false,
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 32),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorValue.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      child: const Text(
-                        'Terapkan Filter',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
+            Widget sectionTitle(String title, String subtitle) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w700, color: ColorValue.textPrimary)),
+                    const SizedBox(height: 2),
+                    Text(subtitle,
+                        style: const TextStyle(fontSize: 12, color: ColorValue.textSecondary)),
+                  ],
+                );
+
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Text('Filter & Urutkan',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w700, color: ColorValue.textPrimary)),
+                        ),
+                        TextButton(
+                          onPressed: () => setModalState(() {
+                            tempSort = 'Terbaru';
+                            tempStatus = 'Semua';
+                          }),
+                          child: const Text('Reset',
+                              style: TextStyle(color: ColorValue.primaryColor, fontWeight: FontWeight.w600)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+
+                    // ── Bagian 1: URUTKAN (pilih satu) ──────────────────
+                    sectionTitle('Urutkan', 'Atur urutan daftar project'),
+                    const SizedBox(height: 8),
+                    ..._sortOptions.map((sort) {
+                      final selected = tempSort == sort;
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () => setModalState(() => tempSort = sort),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Row(
+                            children: [
+                              Icon(
+                                selected ? Icons.radio_button_checked : Icons.radio_button_off,
+                                color: selected ? ColorValue.primaryColor : Colors.grey.shade400,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(sort,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                                          color: ColorValue.textPrimary,
+                                        )),
+                                    Text(_sortHints[sort]!,
+                                        style: const TextStyle(fontSize: 11.5, color: ColorValue.textSecondary)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Divider(height: 1),
+                    ),
+
+                    // ── Bagian 2: STATUS PROJECT (pilih satu) ───────────
+                    sectionTitle('Status Project', 'Saring project berdasarkan statusnya'),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5F5F5),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: _statusOptions.map((status) {
+                          final selected = tempStatus == status;
+                          return Expanded(
+                            child: GestureDetector(
+                              onTap: () => setModalState(() => tempStatus = status),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 180),
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: selected ? ColorValue.primaryColor : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  status,
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: selected ? Colors.white : ColorValue.textSecondary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(_statusHints[tempStatus]!,
+                        style: const TextStyle(fontSize: 11.5, color: ColorValue.textSecondary)),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedSort = tempSort;
+                            _selectedStatusFilter = tempStatus;
+                          });
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorValue.primaryColor,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        ),
+                        child: const Text('Terapkan',
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           },
         );
       },
+    );
+  }
+
+  /// Ringkasan filter aktif yang tampil di bawah judul list.
+  Widget _buildActiveFilterSummary() {
+    if (_activeFilterCount == 0) return const SizedBox.shrink();
+    Widget pill(String text, VoidCallback onClear) => Container(
+          padding: const EdgeInsets.only(left: 10, right: 4, top: 4, bottom: 4),
+          decoration: BoxDecoration(
+            color: ColorValue.primaryLight,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(text,
+                  style: const TextStyle(
+                      fontSize: 12, color: ColorValue.primaryColor, fontWeight: FontWeight.w600)),
+              const SizedBox(width: 2),
+              GestureDetector(
+                onTap: onClear,
+                child: const Icon(Icons.close_rounded, size: 16, color: ColorValue.primaryColor),
+              ),
+            ],
+          ),
+        );
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 6,
+        children: [
+          if (_selectedSort != 'Terbaru')
+            pill('Urutan: $_selectedSort', () => setState(() => _selectedSort = 'Terbaru')),
+          if (_selectedStatusFilter != 'Semua')
+            pill('Status: $_selectedStatusFilter', () => setState(() => _selectedStatusFilter = 'Semua')),
+        ],
+      ),
     );
   }
 
@@ -376,8 +502,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  _isLoadingProfile ? '...' : (_profile
-                                      ?.institusi ?? 'No Institution'),
+                                  _isLoadingProfile
+                                      ? '...'
+                                      : ((_profile?.keahlian.isNotEmpty ?? false)
+                                          ? _profile!.keahlian.first
+                                          : (_profile?.institusi ?? '-')),
                                   style: const TextStyle(
                                     fontSize: 13,
                                     color: ColorValue.textSecondary,
@@ -517,7 +646,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: const BorderSide(
-                                color: Color(0xFF2F80ED),
+                                color: Color(0xFFF7941D),
                                 width: 1.4,
                               ),
                             ),
@@ -553,7 +682,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               SliverToBoxAdapter(
                 child: SizedBox(
-                  height: 44,
+                  height: 40,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -603,17 +732,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                           child: Row(
-                            children: const [
+                            children: [
                               Text(
-                                'Filter',
-                                style: TextStyle(
+                                _activeFilterCount > 0 ? 'Filter ($_activeFilterCount)' : 'Filter',
+                                style: const TextStyle(
                                   fontSize: 13,
                                   color: ColorValue.primaryColor,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              SizedBox(width: 4),
-                              Icon(
+                              const SizedBox(width: 4),
+                              const Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 color: ColorValue.primaryColor,
                                 size: 18,
@@ -626,6 +755,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+
+              SliverToBoxAdapter(child: _buildActiveFilterSummary()),
 
               const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
@@ -645,7 +776,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text(
                         _selectedCategoryIndex == 0 && _selectedStatusFilter == 'Semua'
                             ? 'Belum ada proyek tersedia'
-                            : 'Tidak ada proyek yang sesuai dengan filter',
+                            : 'Tidak ada proyek di kategori/filter ini',
                         style: const TextStyle(
                           color: ColorValue.textSecondary,
                           fontSize: 14,
@@ -673,7 +804,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return CollaborationCard(
                         id: item.id,
                         ownerName: item.owner.fullName,
-                        ownerRole: 'Pemilik Proyek',
+                        ownerRole: 'Pemilik Kolaborasi',
                         ownerImageUrl: (item.owner.profilePicture != null && item.owner.profilePicture.toString().isNotEmpty)
                             ? item.owner.profilePicture.toString()
                             : 'https://ui-avatars.com/api/?name=${item.owner.fullName}&background=random',

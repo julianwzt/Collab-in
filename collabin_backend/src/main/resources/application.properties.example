@@ -1,0 +1,35 @@
+# =============================================================================
+#  Salin file ini menjadi  src/main/resources/application.properties
+#  (file itu sudah di-.gitignore). Semua nilai rahasia diambil dari environment
+#  variable — JANGAN menaruh password / key asli di file ini.
+# =============================================================================
+spring.application.name=collabin
+server.port=${SERVER_PORT:8082}
+
+# ── MySQL ────────────────────────────────────────────────────────────────────
+# contoh DB_URL: jdbc:mysql://localhost:3306/collabin?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+
+# Skema dikelola lewat db/schema.sql (database baru) atau 'update' (database lama).
+# Jangan pakai create / create-drop: itu menghapus data.
+spring.jpa.hibernate.ddl-auto=${JPA_DDL_AUTO:update}
+spring.jpa.open-in-view=false
+
+# ── Upload file ──────────────────────────────────────────────────────────────
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=12MB
+
+# ── Firebase Admin SDK (verifikasi ID token Google) ──────────────────────────
+# Path ke file service-account JSON di LUAR repository, mis. /etc/collabin/firebase-admin.json
+firebase.service-account.path=${FIREBASE_SERVICE_ACCOUNT_PATH:}
+
+# ── Token internal (login email/password) — WAJIB diisi, string acak >= 32 karakter
+app.auth.token-secret=${APP_AUTH_TOKEN_SECRET:}
+
+# ── URL publik backend (untuk membangun URL gambar hasil upload) ─────────────
+app.base-url=${APP_BASE_URL:}
+
+# ── CORS (hanya relevan untuk Flutter Web), dipisah koma ─────────────────────
+app.cors.allowed-origin-patterns=${CORS_ALLOWED_ORIGINS:http://localhost:*,http://127.0.0.1:*}

@@ -313,6 +313,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
       case 'COLLABORATION_REQUEST':
         return 'Permintaan Kolaborasi';
       case 'COLLABORATION_ACCEPT':
+      case 'COLLABORATION_ACCEPTED':
         return 'Kolaborasi Diterima';
       case 'PROJECT_UPDATE':
         return 'Pembaruan Proyek';
@@ -326,6 +327,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
       case 'COLLABORATION_REQUEST':
         return const Color(0xFFF97316);
       case 'COLLABORATION_ACCEPT':
+      case 'COLLABORATION_ACCEPTED':
         return const Color(0xFF22C55E);
       case 'PROJECT_UPDATE':
         return ColorValue.primaryColor;
@@ -339,6 +341,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
       case 'COLLABORATION_REQUEST':
         return Icons.person_add_rounded;
       case 'COLLABORATION_ACCEPT':
+      case 'COLLABORATION_ACCEPTED':
         return Icons.check_circle_rounded;
       case 'PROJECT_UPDATE':
         return Icons.rocket_launch_rounded;

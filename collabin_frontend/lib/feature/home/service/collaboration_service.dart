@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import "package:flutter/foundation.dart" show kIsWeb;
 import 'dart:developer' as developer;
 
 import 'package:collabin/core/common/api_config.dart';
@@ -52,7 +53,7 @@ class CollaborationService {
     request.fields['data'] = jsonEncode(projectData);
 
     // File dikirim dalam field 'pictureProject'
-    if (imagePath != null && imagePath.isNotEmpty) {
+    if (!kIsWeb && imagePath != null && imagePath.isNotEmpty) {
       final file = File(imagePath);
       if (await file.exists()) {
         request.files.add(await http.MultipartFile.fromPath('pictureProject', imagePath));
@@ -104,7 +105,7 @@ class CollaborationService {
     };
     request.fields['data'] = jsonEncode(projectData);
 
-    if (imagePath != null && imagePath.isNotEmpty) {
+    if (!kIsWeb && imagePath != null && imagePath.isNotEmpty) {
       final file = File(imagePath);
       if (await file.exists()) {
         request.files.add(

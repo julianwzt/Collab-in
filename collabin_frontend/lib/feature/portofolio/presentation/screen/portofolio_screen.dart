@@ -30,7 +30,7 @@ class PortofolioScreen extends StatelessWidget {
           ),
           title: const Text(
             'Portofolio Saya',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 18),
           ),
           centerTitle: false,
         ),
@@ -46,7 +46,7 @@ class PortofolioScreen extends StatelessWidget {
                       context.read<PortofolioBloc>().add(FilterPortofolioSearch(query));
                     },
                     decoration: InputDecoration(
-                      hintText: 'Cari Portofolio',
+                      hintText: "Cari Portofolio",
                       hintStyle: TextStyle(color: Colors.grey[400]),
                       prefixIcon: const Icon(Icons.search, color: Colors.grey),
                       filled: true,
@@ -157,7 +157,7 @@ class PortofolioScreen extends StatelessWidget {
                   ),
                 );
               },
-              backgroundColor: const Color(0xFF4285F4),
+              backgroundColor: const Color(0xFFF7941D),
               shape: const CircleBorder(),
               child: const Icon(Icons.add, color: Colors.white),
             );

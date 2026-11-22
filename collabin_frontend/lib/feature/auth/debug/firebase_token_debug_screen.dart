@@ -137,7 +137,7 @@ class _FirebaseTokenDebugScreenState extends State<FirebaseTokenDebugScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('🔐 Firebase ID Token Debug'),
-        backgroundColor: Colors.blue[700],
+        backgroundColor: const Color(0xFFD97706),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -149,7 +149,7 @@ class _FirebaseTokenDebugScreenState extends State<FirebaseTokenDebugScreen> {
             _buildInfoCard(
               'Current User',
               _userEmail ?? 'Not authenticated',
-              Colors.blue,
+              const Color(0xFFF7941D),
             ),
             const SizedBox(height: 16),
 
@@ -333,9 +333,9 @@ class _FirebaseTokenDebugScreenState extends State<FirebaseTokenDebugScreen> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.blue[50],
+            color: const Color(0xFFFFF4E6),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.blue[200]!),
+            border: Border.all(color: const Color(0xFFFFD39E)!),
           ),
           child: Text(
             'Example:\n'
@@ -344,7 +344,7 @@ class _FirebaseTokenDebugScreenState extends State<FirebaseTokenDebugScreen> {
             style: const TextStyle(
               fontFamily: 'monospace',
               fontSize: 11,
-              color: Colors.blue,
+              color: const Color(0xFFF7941D),
             ),
           ),
         ),

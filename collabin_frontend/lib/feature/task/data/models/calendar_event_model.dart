@@ -67,6 +67,6 @@ class CalendarEvent {
 
   Color get color {
     if (isDone) return Colors.green;
-    return const Color(0xFF1E6AF9);
+    return const Color(0xFFF7941D);
   }
 }

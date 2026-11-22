@@ -367,6 +367,7 @@ class _DetailCollaborationState extends State<DetailCollaboration> {
 
     return Scaffold(
       backgroundColor: ColorValue.backgroundColor,
+      bottomNavigationBar: isProjectOwner ? null : _buildJoinBar(isUserAccepted),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -660,7 +661,7 @@ class _DetailCollaborationState extends State<DetailCollaboration> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: ColorValue.textSecondary,
+                        color: ColorValue.textPrimary,
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -672,7 +673,7 @@ class _DetailCollaborationState extends State<DetailCollaboration> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        '${acceptedMembers.length}',
+                        '${acceptedMembers.length + 1}', // + pemilik
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -680,6 +681,26 @@ class _DetailCollaborationState extends State<DetailCollaboration> {
                         ),
                       ),
                     ),
+                  ],
+                ),
+              ),
+            ),
+
+            // ── Pemilik project (tampil pertama, sesuai Figma) ─────────────
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    MemberTile(
+                      name: widget.project.owner.fullName,
+                      role: 'Pemilik Kolaborasi',
+                      imageUrl: widget.project.owner.profilePicture?.toString() ?? '',
+                      rating: ratingByUserId[widget.project.owner.id],
+                      status: 'ACCEPTED',
+                    ),
+                    if (displayMembers.isNotEmpty)
+                      const Divider(height: 1, color: Color(0xFFEEEEEE)),
                   ],
                 ),
               ),
@@ -788,60 +809,6 @@ class _DetailCollaborationState extends State<DetailCollaboration> {
 
 
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
-
-            // ── Join Button ────────────────────────────────────────────────
-            if (widget.owner?.idPengguna != widget.project.owner.id &&
-                !isUserAccepted &&
-                _projectStatus != 'Project Berakhir')
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: (_collaborationModel?.data?.status?.toUpperCase() == 'ACCEPTED' ||
-                          _collaborationModel?.data?.status?.toUpperCase() == 'PENDING' ||
-                          _hasRequestedLocally)
-                          ? null
-                          : () async {
-                        try {
-                          setState(() => _isLoading = true);
-                          await _collaborationService.requestJoin(widget.project.id);
-                          await _markAsRequestedLocally();
-                          if (mounted) {
-                            AppUiHelper.showSuccess(context, 'Berhasil mengirim permintaan bergabung');
-                            _fetchProjectDetail();
-                          }
-                        } catch (e) {
-                          if (mounted) {
-                            AppUiHelper.showError(context, AppUiHelper.readableError(e));
-                            setState(() => _isLoading = false);
-                          }
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorValue.primaryColor,
-                        foregroundColor: Colors.white,
-                        disabledBackgroundColor: Colors.grey[300],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        _hasRequestedLocally && _collaborationModel?.data?.status == null
-                            ? 'Menunggu Persetujuan'
-                            : _getJoinButtonText(_collaborationModel?.data?.status),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
 
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
           ],
@@ -997,7 +964,7 @@ class _DetailCollaborationState extends State<DetailCollaboration> {
       case 'Sedang Berjalan':
         return Colors.green;
       case 'Selesai':
-        return Colors.blue;
+        return const Color(0xFFF7941D);
       case 'Project Berakhir':
         return Colors.purple;
       case 'Ditunda':
@@ -1008,12 +975,92 @@ class _DetailCollaborationState extends State<DetailCollaboration> {
   }
 
 
-  String _getJoinButtonText(String? status) {
-    if (status == null) return 'Bergabung';
-    final s = status.toUpperCase();
-    if (s == 'ACCEPTED') return 'Sudah Bergabung';
-    if (s == 'PENDING') return 'Menunggu Persetujuan';
-    return 'Bergabung';
+  bool get _isProjectFinished =>
+      _projectStatus == 'Project Berakhir' || _projectStatus == 'Selesai';
+
+  /// Tombol "Bergabung Project ini" yang menempel di bawah (sesuai Figma).
+  /// Selalu tampil untuk non-owner dengan status yang jelas.
+  Widget _buildJoinBar(bool isUserAccepted) {
+    final joinStatus = _collaborationModel?.data?.status?.toUpperCase();
+    final pending = joinStatus == 'PENDING' || (_hasRequestedLocally && joinStatus == null);
+    final declined = joinStatus == 'DECLINED';
+
+    String label;
+    IconData? icon;
+    bool enabled = false;
+    if (isUserAccepted) {
+      label = 'Kamu sudah tergabung';
+      icon = Icons.check_circle_rounded;
+    } else if (pending) {
+      label = 'Menunggu Persetujuan Owner';
+      icon = Icons.hourglass_top_rounded;
+    } else if (_isProjectFinished) {
+      label = 'Project sudah selesai';
+      icon = Icons.lock_outline_rounded;
+    } else {
+      label = declined ? 'Ajukan Bergabung Lagi' : 'Bergabung Project ini';
+      enabled = true;
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, -2)),
+        ],
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (declined && enabled)
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Text('Permintaan sebelumnya ditolak oleh pemilik project.',
+                    style: TextStyle(fontSize: 12, color: ColorValue.redColor)),
+              ),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton.icon(
+                onPressed: enabled && !_isLoading ? _requestJoin : null,
+                icon: icon == null ? const SizedBox.shrink() : Icon(icon, size: 18),
+                label: Text(label, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ColorValue.primaryColor,
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor:
+                      isUserAccepted ? const Color(0xFFE7F7EC) : const Color(0xFFEDEDED),
+                  disabledForegroundColor:
+                      isUserAccepted ? const Color(0xFF1E8E4A) : const Color(0xFF8A8A8A),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _requestJoin() async {
+    try {
+      setState(() => _isLoading = true);
+      await _collaborationService.requestJoin(widget.project.id);
+      await _markAsRequestedLocally();
+      if (mounted) {
+        AppUiHelper.showSuccess(context, 'Berhasil mengirim permintaan bergabung');
+        _fetchProjectDetail();
+      }
+    } catch (e) {
+      if (mounted) {
+        AppUiHelper.showError(context, AppUiHelper.readableError(e));
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   Widget _buildPlaceholderImage() {

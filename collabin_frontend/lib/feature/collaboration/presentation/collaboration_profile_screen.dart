@@ -183,7 +183,7 @@ class _CollaborationProfileScreenState extends State<CollaborationProfileScreen>
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: const BorderSide(
-                color: Color(0xFF2F80ED),
+                color: Color(0xFFF7941D),
                 width: 1.4,
               ),
             ),
@@ -570,7 +570,7 @@ class _CollaborationProfileScreenState extends State<CollaborationProfileScreen>
       case 'Sedang Berjalan':
         return Colors.green;
       case 'Selesai':
-        return Colors.blue;
+        return const Color(0xFFF7941D);
       case 'Project Berakhir':
         return Colors.purple;
       case 'Ditunda':

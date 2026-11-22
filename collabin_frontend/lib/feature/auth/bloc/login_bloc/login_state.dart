@@ -10,7 +10,7 @@ class InitialLoginPageState extends LoginPageState {}
 class LoginPageLoading extends LoginPageState {}
 
 class LoginPageLoaded extends LoginPageState {
-  final FirebaseLoginResult loginResult;
+  final FirebaseLoginResult? loginResult;
 
   LoginPageLoaded(this.loginResult);
 }

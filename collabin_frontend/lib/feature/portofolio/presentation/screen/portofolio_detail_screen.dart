@@ -91,7 +91,7 @@ class PortofolioDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             const Text(
-              "Tautan Proyek",
+              "Tautan Eksternal",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 8),
@@ -101,7 +101,7 @@ class PortofolioDetailScreen extends StatelessWidget {
               },
               child: Text(
                 portofolio.fileUrl ?? '-',
-                style: const TextStyle(fontSize: 15, color: Colors.blue, decoration: TextDecoration.underline),
+                style: const TextStyle(fontSize: 15, color: const Color(0xFFF7941D), decoration: TextDecoration.underline),
               ),
             ),
           ],

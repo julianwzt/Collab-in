@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ColorValue {
-  static const Color primaryColor = Color(0XFF277FFE);
+  static const Color primaryColor = Color(0XFFF7941D);
+  // Kuning brand (logo, tombol auth, kalender) – sesuai redesign Figma.
+  static const Color accentYellow = Color(0xFFF5C344);
+  static const Color logoYellow = Color(0xFFFEC20C);
+  static const Color primaryLight = Color(0xFFFFF1E0);
   static const Color secondaryColor = Color(0XFF181818);
   static const Color greyColor = Color(0XFF797979);
   static const Color greyBorderColor = Color(0XFFECEEF2);
@@ -16,9 +20,9 @@ class ColorValue {
   static const Color cardColor = Colors.white;
   static const Color textPrimary = Color(0xFF1A1A1A);
   static const Color textSecondary = Color(0xFF888888);
-  static const Color chipBorder = Color(0xFF277FFE);
-  static const Color tagBackground = Color(0xFFEAF2FF);
-  static const Color tagText = Color(0xFF277FFE);
+  static const Color chipBorder = Color(0xFFF7941D);
+  static const Color tagBackground = Color(0xFFFFF1E0);
+  static const Color tagText = Color(0xFFF7941D);
   static const Color starColor = Color(0xFFFFC107);
   static Color borderColor = Color(0xFFD9DDE3);
   static Color hintColor = Color(0xFFA7A7A7);
@@ -26,7 +30,7 @@ class ColorValue {
 }
 
 class ColorValueDark {
-  static const Color primaryColor = Color(0XFF277FFE);
+  static const Color primaryColor = Color(0XFFF7941D);
   static const Color secondaryColor = Color(0XFF8DCBED);
   static const Color greyColor = Color(0XFF9B9B9B);
   static const Color borderColor = Color(0XFFE7E7E7);

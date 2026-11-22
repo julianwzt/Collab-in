@@ -5,6 +5,7 @@ import 'package:collabin/core/common/color_value.dart';
 import 'package:collabin/core/common/shared_code.dart';
 import 'package:collabin/feature/home/presentation/home_screen.dart';
 import 'package:collabin/feature/auth/login/login_screen.dart';
+import 'package:collabin/feature/messages/messages_screen.dart';
 import 'package:collabin/feature/profile/presentation/screens/profile_screen.dart';
 
 import '../../feature/task/presentation/screens/task_screen.dart';
@@ -26,7 +27,12 @@ class _BottomNavigationState extends State<BottomNavigation>
   final List _pageStack = [];
   final SharedCode _sharedCode = SharedCode();
 
-  final _tabs = [const HomeScreen(), const TaskScreen(), const ProfileScreen()];
+  final _tabs = [
+    const HomeScreen(),
+    const TaskScreen(),
+    const MessagesScreen(),
+    const ProfileScreen(),
+  ];
 
   void _pagePush(int i) {
     if (_pageStack.isEmpty) {
@@ -125,7 +131,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Kolaborasi',
+              label: 'Collab',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(Assets.image.svg.taskIcon.path),
@@ -136,7 +142,12 @@ class _BottomNavigationState extends State<BottomNavigation>
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Tugas',
+              label: 'Task',
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.forum_outlined, size: 24),
+              activeIcon: Icon(Icons.forum_rounded, size: 24),
+              label: 'Messages',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(Assets.image.svg.profileIcon.path),
@@ -147,7 +158,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Profil',
+              label: 'Profile',
             ),
           ],
           currentIndex: _currentIndex,

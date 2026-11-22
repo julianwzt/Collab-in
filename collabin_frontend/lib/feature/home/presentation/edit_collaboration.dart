@@ -35,9 +35,9 @@ class CollaborationData {
 }
 
 class EditCollaborationPage extends StatefulWidget {
-  final CollaborationData? initialData; // null = dummy data
+  final CollaborationData initialData;
 
-  const EditCollaborationPage({super.key, this.initialData});
+  const EditCollaborationPage({super.key, required this.initialData});
 
   @override
   State<EditCollaborationPage> createState() => _EditCollaborationPageState();
@@ -66,22 +66,10 @@ class _EditCollaborationPageState extends State<EditCollaborationPage> {
     'Ditunda',
   ];
 
-  // Dummy data untuk preview
-  static const _dummy = CollaborationData(
-    title: 'Moneyger Application Project',
-    description:
-    'Moneyger adalah sebuah platform aplikasi untuk mengelola keuangan dengan mudah. Aplikasi ini juga menawarkan berbagai fitur yang dapat membantu masyarakat mempermudah produktivitas mereka.',
-    category: ['Portofolio project'],
-    status: 'Sedang Berjalan',
-    repositoryLink: 'https://github.com/example/moneyger',
-    imageUrl:
-    'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80',
-  );
-
   @override
   void initState() {
     super.initState();
-    final data = widget.initialData ?? _dummy;
+    final data = widget.initialData;
     _titleController = TextEditingController(text: data.title);
     _descController = TextEditingController(text: data.description);
     _categoryController = TextEditingController();
@@ -308,7 +296,7 @@ class _EditCollaborationPageState extends State<EditCollaborationPage> {
       case 'Sedang Berjalan':
         return Colors.green;
       case 'Selesai':
-        return Colors.blue;
+        return const Color(0xFFF7941D);
       case 'Project Berakhir':
         return Colors.purple;
       case 'Ditunda':

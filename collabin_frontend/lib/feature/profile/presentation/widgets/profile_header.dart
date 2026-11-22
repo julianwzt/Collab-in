@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:collabin/core/common/phone_helper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:collabin/core/widget/profile_avatar.dart';
@@ -48,16 +49,16 @@ class ProfileHeader extends StatelessWidget {
                         children: profile!.keahlian.map((skill) => Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: Colors.blue.shade50,
+                            color: const Color(0xFFFFF4E6),
                             borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: Colors.blue.shade100),
+                            border: Border.all(color: const Color(0xFFFFE7C7)),
                           ),
                           child: Text(
                             skill,
                             style: GoogleFonts.poppins(
                               fontSize: 11,
                               fontWeight: FontWeight.w500,
-                              color: Colors.blue.shade700,
+                              color: const Color(0xFFD97706),
                             ),
                           ),
                         )).toList(),
@@ -98,13 +99,20 @@ class ProfileHeader extends StatelessWidget {
                 _launchUrl(profile?.facebook, prefix: 'https://facebook.com/');
               }),
               _socialIcon(FontAwesomeIcons.whatsapp, Colors.black, () {
-                _launchUrl(profile?.whatsapp, prefix: 'https://wa.me/');
+                _launchUri(PhoneHelper.waUri(profile?.whatsapp), enabled: PhoneHelper.normalize(profile?.whatsapp).isNotEmpty);
               }),
             ],
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _launchUri(Uri uri, {bool enabled = true}) async {
+    if (!enabled) return;
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 
   Future<void> _launchUrl(String? value, {String prefix = ''}) async {
@@ -141,7 +149,7 @@ class ProfileHeader extends StatelessWidget {
           borderRadius: BorderRadius.circular(
             10,
           ),
-            splashColor: Colors.blue.withValues(alpha: 0.1),
+            splashColor: const Color(0xFFF7941D).withValues(alpha: 0.1),
           child: Center(child: FaIcon(icon, color: color, size: 20)),
         ),
       ),

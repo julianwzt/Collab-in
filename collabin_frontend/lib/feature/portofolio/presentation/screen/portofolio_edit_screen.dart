@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:collabin/core/common/shared_code.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,8 +33,7 @@ class _PortofolioEditScreenState extends State<PortofolioEditScreen> {
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      final file = File(image.path);
-      final sizeInBytes = await file.length();
+      final sizeInBytes = await image.length();
       final sizeInMb = sizeInBytes / (1024 * 1024);
 
       if (sizeInMb > 10) {
@@ -96,9 +96,14 @@ class _PortofolioEditScreenState extends State<PortofolioEditScreen> {
           ),
           title: const Text(
             'Edit Portofolio',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 18),
           ),
           centerTitle: false,
+          titleSpacing: 0,
+          bottom: const PreferredSize(
+            preferredSize: Size.fromHeight(1),
+            child: Divider(height: 1, color: Color(0xFFEEEEEE)),
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -113,14 +118,30 @@ class _PortofolioEditScreenState extends State<PortofolioEditScreen> {
                 }
               },
               child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.symmetric(horizontal: 4.0),
                 child: Text(
                   'Simpan',
-                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 16),
+                  style: TextStyle(color: const Color(0xFFF7941D), fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),
             ),
           ],
+        ),
+        bottomNavigationBar: SafeArea(
+          top: false,
+          child: Container(
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: Color(0xFFEEEEEE))),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            alignment: Alignment.centerLeft,
+            height: 56,
+            child: IconButton(
+              tooltip: 'Pilih gambar',
+              onPressed: _pickImage,
+              icon: const Icon(Icons.image_outlined, color: Colors.grey, size: 26),
+            ),
+          ),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
@@ -140,7 +161,7 @@ class _PortofolioEditScreenState extends State<PortofolioEditScreen> {
                       border: Border.all(color: Colors.grey.withOpacity(0.2)),
                       image: _imagePath != null
                           ? DecorationImage(
-                              image: FileImage(File(_imagePath!)),
+                              image: (kIsWeb ? NetworkImage(_imagePath!) : FileImage(File(_imagePath!))) as ImageProvider,
                               fit: BoxFit.cover,
                             )
                           : (widget.portofolio.image != null && widget.portofolio.image!.isNotEmpty
@@ -175,7 +196,7 @@ class _PortofolioEditScreenState extends State<PortofolioEditScreen> {
                   validator: _sharedCode.descriptionValidator,
                 ),
                 const SizedBox(height: 24),
-                _buildInputLabel("Tautan Proyek"),
+                _buildInputLabel("Tautan Eksternal"),
                 TextFormField(
                   controller: _fileUrlController,
                   style: const TextStyle(fontSize: 15, color: Colors.black87),
@@ -228,7 +249,7 @@ class _PortofolioEditScreenState extends State<PortofolioEditScreen> {
       padding: const EdgeInsets.only(bottom: 10.0, left: 2.0),
       child: Text(
         label,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
+        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Colors.black),
       ),
     );
   }
@@ -250,7 +271,7 @@ class _PortofolioEditScreenState extends State<PortofolioEditScreen> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.blue, width: 1.2),
+        borderSide: const BorderSide(color: const Color(0xFFF7941D), width: 1.2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),

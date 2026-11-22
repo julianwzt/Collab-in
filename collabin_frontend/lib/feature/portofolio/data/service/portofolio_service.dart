@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:developer' as developer;
 import 'package:collabin/core/common/api_config.dart';
 import 'package:collabin/core/common/api_exception.dart';
@@ -92,7 +93,7 @@ class PortofolioService {
       'fileUrl': fileUrl,
     });
 
-    if (imagePath != null && imagePath.isNotEmpty) {
+    if (!kIsWeb && imagePath != null && imagePath.isNotEmpty) {
       final file = File(imagePath);
       if (await file.exists()) {
         final extension = imagePath.split('.').last.toLowerCase();
@@ -148,7 +149,7 @@ class PortofolioService {
       'fileUrl': fileUrl,
     });
 
-    if (imagePath != null && imagePath.isNotEmpty) {
+    if (!kIsWeb && imagePath != null && imagePath.isNotEmpty) {
       final file = File(imagePath);
       if (await file.exists()) {
         final extension = imagePath.split('.').last.toLowerCase();

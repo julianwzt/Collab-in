@@ -32,8 +32,8 @@ class _TaskScreenState extends State<TaskScreen> {
               child: TabBar(
                 indicator: BoxDecoration(
                   color: const Color(
-                    0xFFDDEBFF,
-                  ), // Warna biru muda sesuai desain
+                    0xFFFFE7C7,
+                  ), // Oranye muda sesuai tema
                   borderRadius: BorderRadius.circular(10),
                 ),
                 labelColor: const Color.fromARGB(

@@ -11,14 +11,8 @@ class PortofolioCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFEEEEEE)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +22,7 @@ class PortofolioCard extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFE2E8F0),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                 image: portofolio.image != null && portofolio.image!.isNotEmpty
                     ? DecorationImage(
                         image: NetworkImage(portofolio.image!),
@@ -51,7 +45,7 @@ class PortofolioCard extends StatelessWidget {
                   portofolio.title ?? '-',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF0F172A)),
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: Color(0xFFF7941D)),
                 ),
                 const SizedBox(height: 4),
                 Text(

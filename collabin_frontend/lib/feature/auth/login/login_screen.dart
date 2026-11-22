@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:collabin/core/widget/collabin_logo.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:collabin/core/common/app_ui_helper.dart';
@@ -17,7 +18,7 @@ import '../../../../core/gen/fonts.gen.dart';
 import '../../../core/common/shared_code.dart';
 import '../register/register_screen.dart';
 
-const Color _primaryBlue = Color(0xFF2F80ED);
+const Color _primaryBlue = Color(0xFFF5C344); // kuning sesuai Figma (Masuk/Daftar)
 const Color _titleColor = Color(0xFF111111);
 const Color _subtitleColor = Color(0xFF9E9E9E);
 
@@ -216,11 +217,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   const SizedBox(height: 24),
 
-                  Image.asset(
-                    Assets.image.png.collabinLogo.path,
-                    width: 210,
-                    fit: BoxFit.contain,
-                  ),
+                  const CollabinLogo(size: 104),
+                  const SizedBox(height: 40),
 
                   const Text(
                     'Selamat Datang',

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:collabin/core/widget/collabin_logo.dart';
 
 import '../../core/common/shared_code.dart';
 import '../../../../core/gen/assets.gen.dart';
@@ -83,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Image.asset(Assets.image.png.collabinLogo.path)],
+              children: const [CollabinLogo(size: 110, showText: true)],
             ),
           ),
         ),

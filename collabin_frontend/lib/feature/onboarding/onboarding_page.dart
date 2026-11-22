@@ -78,9 +78,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryBlue = Color(0xFF2F80ED);
-    const Color lightBlue = Color(0xFFA9CBFF);
-    const Color textBlue = Color(0xFF8BB8FF);
+    const Color primaryBlue = Color(0xFFF7941D);
+    const Color lightBlue = Color(0xFFFFD39E);
+    const Color textBlue = Color(0xFF8A8A8A); // abu-abu agar mudah dibaca
     const Color titleColor = Color(0xFF111111);
     const Color backgroundColor = Color(0xFFF8F8F8);
 
@@ -208,8 +208,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
     required VoidCallback onSkip,
     required VoidCallback onBack,
   }) {
-    const Color primaryBlue = Color(0xFF2F80ED);
-    const Color disabledBlue = Color(0xFFA9CBFF);
+    const Color primaryBlue = Color(0xFFF7941D);
+    const Color disabledBlue = Color(0xFFFFD39E);
 
     final bool isFirstPage = currentIndex == 0;
 

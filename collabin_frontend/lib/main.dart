@@ -8,6 +8,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:collabin/core/common/app_navigator.dart';
 import 'package:collabin/feature/splash_screen/splash_screen.dart';
@@ -17,7 +18,16 @@ import 'package:collabin/feature/notification/service/notification_service.dart'
 import 'firebase_options.dart';
 
 Future<void> main() async {
+  await _bootstrap();
+}
+
+Future<void> _bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Font Poppins sudah dibundel di assets/fonts → jangan unduh dari internet.
+  // (Unduhan font yang gagal sebelumnya memunculkan error di
+  // http/byte_stream.dart dan membuat debugger berhenti.)
+  GoogleFonts.config.allowRuntimeFetching = false;
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

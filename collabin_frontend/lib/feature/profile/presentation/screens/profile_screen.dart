@@ -142,7 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Expanded(
                   child: StatCard(
-                    title: 'Kolaborasi',
+                    title: 'Kolaborasi Anda',
                     icon: Icons.groups_rounded,
                     onTap: () => Navigator.push(
                       context,
@@ -155,7 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: StatCard(
-                    title: 'Portofolio',
+                    title: 'Portofolio Anda',
                     icon: Icons.grid_view_rounded,
                     onTap: () {
                       debugPrint('Pindah ke halaman Portofolio');
@@ -244,7 +244,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   _menuItem(
                     icon: Icons.person_outline_rounded,
-                    title: 'Informasi Pribadi',
+                    title: 'Edit Profile',
                     subtitle: 'Ubah nama, foto, dan bio',
                     isFirst: true,
                     onTap: () async {

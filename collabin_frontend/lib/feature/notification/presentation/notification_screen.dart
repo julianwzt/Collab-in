@@ -396,6 +396,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       case 'COLLABORATION_REQUEST':
         return Icons.person_add_rounded;
       case 'COLLABORATION_ACCEPT':
+      case 'COLLABORATION_ACCEPTED':
         return Icons.check_circle_rounded;
       case 'PROJECT_UPDATE':
         return Icons.rocket_launch_rounded;
@@ -409,6 +410,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       case 'COLLABORATION_REQUEST':
         return const Color(0xFFF97316); // orange
       case 'COLLABORATION_ACCEPT':
+      case 'COLLABORATION_ACCEPTED':
         return const Color(0xFF22C55E); // green
       case 'PROJECT_UPDATE':
         return ColorValue.primaryColor;

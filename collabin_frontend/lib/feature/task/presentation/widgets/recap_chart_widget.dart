@@ -43,7 +43,7 @@ class RecapChartWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 4),
-              const Icon(Icons.arrow_downward, color: Colors.blue, size: 24),
+              const Icon(Icons.arrow_downward, color: const Color(0xFFF7941D), size: 24),
             ],
           ),
           const SizedBox(height: 4),
@@ -70,7 +70,7 @@ class RecapChartWidget extends StatelessWidget {
                     barRods: [
                       BarChartRodData(
                         toY: (item['value'] as num).toDouble(),
-                        color: Colors.blue,
+                        color: const Color(0xFFF7941D),
                         width: 18,
                         borderRadius: BorderRadius.circular(6),
                       ),

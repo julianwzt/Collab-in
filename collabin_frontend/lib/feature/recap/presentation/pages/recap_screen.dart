@@ -160,7 +160,7 @@ class RecapScreen extends StatelessWidget {
       crossAxisSpacing: 12,
       childAspectRatio: 1.6,
       children: [
-        _buildStatItem('Owned Projects', recap.ownedProjectsCount.toString(), const Color(0xFF0969DA), Icons.folder_outlined),
+        _buildStatItem('Owned Projects', recap.ownedProjectsCount.toString(), const Color(0xFFF7941D), Icons.folder_outlined),
         _buildStatItem('Collaborations', recap.collaborationProjectsCount.toString(), const Color(0xFF1A7F37), Icons.people_outline),
         _buildStatItem('Contribution Acts', recap.totalActivityCount.toString(), const Color(0xFF9A6700), Icons.bolt),
         _buildStatItem('Active Projects', activeCount.toString(), const Color(0xFF8250DF), Icons.rocket_launch_outlined),
@@ -331,7 +331,7 @@ class RecapScreen extends StatelessWidget {
                     'Activity in ${activity.namaLengkap ?? 'Project'}',
                     style: GoogleFonts.poppins(
                       fontSize: 11,
-                      color: Colors.blue.shade700,
+                      color: const Color(0xFFD97706),
                     ),
                   ),
                 ],

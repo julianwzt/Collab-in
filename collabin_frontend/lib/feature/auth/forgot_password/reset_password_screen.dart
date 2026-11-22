@@ -22,7 +22,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   bool _isSubmitting = false;
   final SharedCode _sharedCode = SharedCode();
 
-  static const Color _primaryBlue = Color(0xFF2F80ED);
+  static const Color _primaryBlue = Color(0xFFF7941D);
   static const Color _titleColor = Color(0xFF111111);
   static const Color _subtitleColor = Color(0xFF9E9E9E);
 

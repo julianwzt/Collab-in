@@ -186,9 +186,9 @@ class _SetPasswordForNewGoogleUserScreenState
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
+                  color: const Color(0xFFFFF4E6),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.blue.shade200),
+                  border: Border.all(color: const Color(0xFFFFD39E)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

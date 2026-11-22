@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:collabin/core/widget/collabin_logo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:collabin/core/common/app_ui_helper.dart';
 import 'package:collabin/core/widget/auth_text_field.dart';
@@ -15,7 +16,7 @@ import '../../../core/widget/bottom_navigation.dart';
 import '../login/login_screen.dart';
 import '../repository/register_repository/register_repository.dart';
 
-const Color _primaryBlue = Color(0xFF2F80ED);
+const Color _primaryBlue = Color(0xFFF5C344); // kuning sesuai Figma (Masuk/Daftar)
 const Color _titleColor = Color(0xFF111111);
 const Color _subtitleColor = Color(0xFF9E9E9E);
 
@@ -104,11 +105,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 24),
-                  Image.asset(
-                    Assets.image.png.collabinLogo.path,
-                    width: 210,
-                    fit: BoxFit.contain,
-                  ),
+                  const CollabinLogo(size: 104),
+                  const SizedBox(height: 40),
                   const Text(
                     'Daftar Sekarang',
                     textAlign: TextAlign.center,

@@ -35,7 +35,7 @@ class StatCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(
               12,
             ), // Harus sama dengan Container
-            splashColor: Colors.blue.withOpacity(
+            splashColor: const Color(0xFFF7941D).withOpacity(
               0.1,
             ), // Warna efek saat ditekan
             child: Padding(
@@ -43,7 +43,7 @@ class StatCard extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, color: Colors.blue.shade600, size: 30),
+                  Icon(icon, color: const Color(0xFFE07F0E), size: 30),
                   const SizedBox(height: 10),
                   Text(
                     title,

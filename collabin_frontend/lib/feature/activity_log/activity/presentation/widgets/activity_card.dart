@@ -13,7 +13,7 @@ class ActivityCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue.shade300, width: 1.5),
+        border: Border.all(color: const Color(0xFFFFC98A), width: 1.5),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(

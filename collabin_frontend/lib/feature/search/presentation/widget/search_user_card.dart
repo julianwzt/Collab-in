@@ -42,13 +42,13 @@ class SearchUserCard extends StatelessWidget {
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
+                    color: const Color(0xFFFFF4E6),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: profileImageUrl.isEmpty
                       ? const Icon(
                           Icons.person,
-                          color: Colors.blue,
+                          color: const Color(0xFFF7941D),
                           size: 28,
                         )
                       : ClipRRect(
@@ -58,7 +58,7 @@ class SearchUserCard extends StatelessWidget {
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => const Icon(
                               Icons.person,
-                              color: Colors.blue,
+                              color: const Color(0xFFF7941D),
                               size: 28,
                             ),
                           ),

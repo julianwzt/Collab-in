@@ -10,7 +10,7 @@ class AppUiHelper {
   static void showSnackBar(
     BuildContext context,
     String message, {
-    Color backgroundColor = const Color(0xFF2F80ED),
+    Color backgroundColor = const Color(0xFFF7941D),
   }) {
     if (!context.mounted) return;
 
@@ -52,7 +52,7 @@ class AppUiHelper {
     showSnackBar(
       context,
       message,
-      backgroundColor: const Color(0xFF2F80ED),
+      backgroundColor: const Color(0xFFF7941D),
     );
   }
 

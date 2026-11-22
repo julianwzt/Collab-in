@@ -24,25 +24,24 @@ class _CategoryChipState extends State<CategoryChip> {
       onTap: widget.onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: widget.isSelected
-              ? ColorValue.primaryColor.withOpacity(0.12)
-              : Colors.white,
-          borderRadius: BorderRadius.circular(12), 
+          color: widget.isSelected ? ColorValue.primaryColor : Colors.white,
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: widget.isSelected
-                ? ColorValue.primaryColor.withOpacity(0.2)
-                : Colors.grey.shade300,
-            width: 1.5,
+                ? ColorValue.primaryColor
+                : ColorValue.primaryColor.withValues(alpha: 0.45),
+            width: 1,
           ),
         ),
         child: Text(
           widget.label,
           style: TextStyle(
-            color: ColorValue.primaryColor,
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
+            color: widget.isSelected ? Colors.white : ColorValue.primaryColor,
+            fontSize: 12.5,
+            fontWeight: widget.isSelected ? FontWeight.w600 : FontWeight.w500,
           ),
         ),
       ),

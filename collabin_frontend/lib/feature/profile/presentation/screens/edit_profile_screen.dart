@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:collabin/core/common/phone_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
@@ -57,7 +60,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _keahlianController = TextEditingController();
     _keahlianList = List<String>.from(p?.keahlian ?? []);
     _lokasiController = TextEditingController(text: p?.lokasi?.toString() ?? '');
-    _whatsappController = TextEditingController(text: p?.whatsapp?.toString() ?? '');
+    _whatsappController = TextEditingController(text: PhoneHelper.localPart(p?.whatsapp?.toString()));
     _instagramController = TextEditingController(text: p?.instagram?.toString() ?? '');
     _facebookController = TextEditingController(text: p?.facebook?.toString() ?? '');
     _linkedinController = TextEditingController(text: p?.linkedin?.toString() ?? '');
@@ -128,8 +131,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final lokasiVal = _lokasiController.text.trim();
     if (lokasiVal != (p?.lokasi?.toString() ?? '')) body['lokasi'] = lokasiVal;
 
-    final whatsappVal = _whatsappController.text.trim();
-    if (whatsappVal != (p?.whatsapp?.toString() ?? '')) body['whatsapp'] = whatsappVal;
+    // WhatsApp disimpan sebagai NOMOR (format 62xxxxxxxxxx), bukan link.
+    final whatsappVal = PhoneHelper.normalize(_whatsappController.text);
+    if (whatsappVal != PhoneHelper.normalize(p?.whatsapp?.toString())) body['whatsapp'] = whatsappVal;
 
     final instagramVal = _instagramController.text.trim();
     if (instagramVal != (p?.instagram?.toString() ?? '')) body['instagram'] = instagramVal;
@@ -145,7 +149,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
 
     File? imageFileToUpload;
-    if (_pickedImageFile != null) {
+    if (_pickedImageFile != null && !kIsWeb) {
       imageFileToUpload = File(_pickedImageFile!.path);
     }
 
@@ -245,7 +249,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     children: [
                       CircleAvatar(
                         radius: 55,
-                        backgroundColor: Colors.blue.shade100,
+                        backgroundColor: const Color(0xFFFFE7C7),
                         child: _buildProfileAvatarContent(),
                       ),
                       Positioned(
@@ -256,7 +260,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: const BoxDecoration(
-                              color: Colors.blue,
+                              color: const Color(0xFFF7941D),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -284,15 +288,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 const SizedBox(height: 20),
                 _buildLabel('Lokasi'),
                 _buildTextField(_lokasiController, 'Lokasi'),
-                const SizedBox(height: 12),
+                const SizedBox(height: 28),
+                Text('Kontak & Sosial Media',
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w700, fontSize: 15)),
+                const SizedBox(height: 2),
+                Text('Ditampilkan sebagai tombol di profil kamu',
+                    style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade600)),
                 _buildLabel('WhatsApp'),
-                _buildTextField(_whatsappController, 'WhatsApp'),
+                _buildWhatsappField(),
                 _buildLabel('Instagram'),
-                _buildTextField(_instagramController, 'Instagram'),
+                _buildSocialField(_instagramController, 'Instagram',
+                    FontAwesomeIcons.instagram, 'username, contoh: dimas.dev'),
                 _buildLabel('Facebook'),
-                _buildTextField(_facebookController, 'Facebook'),
+                _buildSocialField(_facebookController, 'Facebook',
+                    FontAwesomeIcons.facebook, 'username atau link profil'),
                 _buildLabel('LinkedIn'),
-                _buildTextField(_linkedinController, 'LinkedIn'),
+                _buildSocialField(_linkedinController, 'LinkedIn',
+                    FontAwesomeIcons.linkedin, 'username atau link profil'),
                 const SizedBox(height: 30),
               ],
             ),
@@ -307,15 +319,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     // If user picked a new image file, show it from disk
     if (_pickedImageFile != null && !_imageRemoved) {
       try {
-        final file = File(_pickedImageFile!.path);
         return ClipOval(
-          child: Image.file(
-            file,
+          child: (kIsWeb
+              ? Image.network(_pickedImageFile!.path,
+                  fit: BoxFit.cover, width: 110, height: 110)
+              : Image.file(
+            File(_pickedImageFile!.path),
             fit: BoxFit.cover,
             width: 110,
             height: 110,
             errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 48),
-          ),
+          )),
         );
       } catch (_) {
         // fallthrough
@@ -439,8 +453,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
       if (picked == null) return;
 
-      final file = File(picked.path);
-      final sizeInBytes = await file.length();
+      final sizeInBytes = await picked.length();
       final sizeInMb = sizeInBytes / (1024 * 1024);
 
       if (sizeInMb > 10) {
@@ -486,8 +499,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
       if (picked == null) return;
 
-      final file = File(picked.path);
-      final sizeInBytes = await file.length();
+      final sizeInBytes = await picked.length();
       final sizeInMb = sizeInBytes / (1024 * 1024);
 
       if (sizeInMb > 10) {
@@ -567,7 +579,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       padding: const EdgeInsets.only(bottom: 8, top: 15),
       child: Text(
         text,
-        style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 14),
+        style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 13),
       ),
     );
   }
@@ -594,7 +606,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: Colors.blue.shade700,
+                      color: const Color(0xFFD97706),
                     ),
                   ),
                   onDeleted: () {
@@ -602,11 +614,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       _keahlianList.remove(skill);
                     });
                   },
-                  backgroundColor: Colors.blue.shade50,
-                  deleteIcon: Icon(Icons.cancel, size: 16, color: Colors.blue.shade300),
+                  backgroundColor: const Color(0xFFFFF4E6),
+                  deleteIcon: Icon(Icons.cancel, size: 16, color: const Color(0xFFFFC98A)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
-                    // borderSide: BorderSide(color: Colors.blue.shade100),
+                    // borderSide: BorderSide(color: const Color(0xFFFFE7C7)),
                   ),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 )),
@@ -678,11 +690,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         if (label == 'Nama Lengkap') {
           return sharedCode.nameValidator(v);
         }
-        if (['WhatsApp', 'Instagram', 'Facebook', 'LinkedIn'].contains(label) &&
-            v != null &&
-            v.isNotEmpty) {
-          return sharedCode.urlValidator(v);
-        }
         return null;
       },
       decoration: InputDecoration(
@@ -699,13 +706,107 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.blue),
+          borderSide: const BorderSide(color: const Color(0xFFF7941D)),
         ),
       ),
     );
   }
 
-  // Keahlian chip helper removed (not used)
+  InputDecoration _fieldDecoration({String? hint, Widget? prefix}) => InputDecoration(
+        hintText: hint,
+        hintStyle: GoogleFonts.poppins(fontSize: 13.5, color: Colors.grey.shade400),
+        prefixIcon: prefix,
+        counterText: '',
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.grey.shade200),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: ColorValue.primaryColor),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+      );
+
+  /// WhatsApp = nomor HP. Prefix +62 tetap, hanya angka, divalidasi.
+  Widget _buildWhatsappField() {
+    return TextFormField(
+      controller: _whatsappController,
+      keyboardType: TextInputType.phone,
+      maxLength: 13,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        // Jika user mengetik 0812... atau 62812..., buang awalan agar jadi 812...
+        TextInputFormatter.withFunction((oldV, newV) {
+          var t = newV.text;
+          if (t.startsWith('62')) t = t.substring(2);
+          if (t.startsWith('0')) t = t.substring(1);
+          return TextEditingValue(text: t, selection: TextSelection.collapsed(offset: t.length));
+        }),
+      ],
+      style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade800, letterSpacing: 0.5),
+      validator: PhoneHelper.validate,
+      decoration: _fieldDecoration(
+        hint: '81234567890',
+        prefix: Padding(
+          padding: const EdgeInsets.only(left: 12, right: 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const FaIcon(FontAwesomeIcons.whatsapp, size: 18, color: Color(0xFF25D366)),
+              const SizedBox(width: 8),
+              Text('+62',
+                  style: GoogleFonts.poppins(
+                      fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey.shade800)),
+              const SizedBox(width: 8),
+              Container(width: 1, height: 20, color: Colors.grey.shade300),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Sosial media: boleh username saja atau link lengkap.
+  Widget _buildSocialField(
+      TextEditingController controller, String label, FaIconData icon, String hint) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: TextInputType.url,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade800),
+      validator: (v) {
+        final value = v?.trim() ?? '';
+        if (value.isEmpty) return null;
+        if (value.startsWith('http') || value.contains('/')) {
+          return SharedCode().urlValidator(value);
+        }
+        final user = value.startsWith('@') ? value.substring(1) : value;
+        if (!RegExp(r'^[A-Za-z0-9._-]{1,50}$').hasMatch(user)) {
+          return 'Username $label tidak valid';
+        }
+        return null;
+      },
+      decoration: _fieldDecoration(
+        hint: hint,
+        prefix: SizedBox(
+          width: 46,
+          child: Center(child: FaIcon(icon, size: 18, color: Colors.grey.shade600)),
+        ),
+      ),
+    );
+  }
 }
 
 
