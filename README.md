@@ -23,8 +23,6 @@ set -a; . ./.env; set +a
 
 ## Frontend (Flutter)
 
-Alamat backend diatur lewat `--dart-define=API_BASE_URL`:
-
 ```bash
 cd collabin_frontend
 flutter pub get
