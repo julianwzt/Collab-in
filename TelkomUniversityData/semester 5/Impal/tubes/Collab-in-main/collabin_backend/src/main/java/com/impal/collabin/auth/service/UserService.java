@@ -291,7 +291,7 @@ public class UserService {
     // =========================================================================
 
     private AuthUserResponse buildAuthResponse(User user) {
-        long expiredAt = System.currentTimeMillis() + (1000L * 60 * 60 * 24 * 7);
+        long expiredAt = System.currentTimeMillis() + (1000L * 60 );
 
         return AuthUserResponse.builder()
                 .userId(user.getIdPengguna())

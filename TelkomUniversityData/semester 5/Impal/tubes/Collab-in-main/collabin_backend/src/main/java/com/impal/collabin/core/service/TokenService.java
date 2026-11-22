@@ -43,38 +43,36 @@ public class TokenService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(rawToken.getBytes(StandardCharsets.UTF_8));
     }
 
-    public Integer extractUserIdFromAuthorizationHeader(String authorizationHeader) {
-        if (authorizationHeader == null || authorizationHeader.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing Authorization header");
-        }
+    
+public Integer extractUserIdFromAuthorizationHeader(String authorizationHeader) {
+    if (authorizationHeader == null || authorizationHeader.isBlank()) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing Authorization header");
+    }
 
-        String token = authorizationHeader.trim();
+    String token = authorizationHeader.trim();
 
-        // Accept both "Bearer <token>" and raw token values to be more tolerant to clients
-        if (token.regionMatches(true, 0, "Bearer ", 0, 7)) {
-            token = token.substring(7).trim();
-        }
+    if (token.regionMatches(true, 0, "Bearer ", 0, 7)) {
+        token = token.substring(7).trim();
+    }
 
-        // strip possible surrounding quotes that some clients might include
-        if ((token.startsWith("\"") && token.endsWith("\"")) || (token.startsWith("'") && token.endsWith("'"))) {
-            token = token.substring(1, token.length() - 1).trim();
-        }
+    if ((token.startsWith("\"") && token.endsWith("\"")) ||
+        (token.startsWith("'") && token.endsWith("'"))) {
+        token = token.substring(1, token.length() - 1).trim();
+    }
 
-        if (token.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing token");
-        }
+    if (token.isEmpty()) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing token");
+    }
 
-        // First try to parse as internal token
-        try {
-            return extractUserIdFromToken(token);
-        } catch (ResponseStatusException e) {
-            // fallthrough - try verifying as Firebase ID token
-        }
+    if (token.split("\\.").length == 3) {
+        FirebaseAuthService.FirebaseIdentity identity =
+                firebaseAuthService.verifyIdToken(token);
 
-        // Then treat token as Firebase ID token (verify signature + claims via Admin SDK)
-        FirebaseAuthService.FirebaseIdentity identity = firebaseAuthService.verifyIdToken(token);
         return resolveOrCreateUserId(identity);
     }
+
+    return extractUserIdFromToken(token);
+}
 
     private Integer resolveOrCreateUserId(FirebaseAuthService.FirebaseIdentity identity) {
         User userByFirebaseUid = userRepository.findByFirebaseUid(identity.uid()).orElse(null);
