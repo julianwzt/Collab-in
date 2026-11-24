@@ -31,11 +31,8 @@ public class Project {
     @Column(name = "description", nullable = true)
     private String description;
 
-    @ElementCollection
-    @CollectionTable(
-            name = "project_category",
-            joinColumns = @JoinColumn(name = "project_id")
-    )
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "project_category", joinColumns = @JoinColumn(name = "project_id"))
     @Column(name = "category")
     private List<String> category;
 
