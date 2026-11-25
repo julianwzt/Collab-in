@@ -15,9 +15,6 @@ backend.
 
 ```bash
 cd collabin_backend
-cp src/main/resources/application.properties.example src/main/resources/application.properties
-cp .env.example .env        # isi nilai asli, lalu:
-set -a; . ./.env; set +a
 ./mvnw spring-boot:run      # default port 8082
 ```
 
@@ -29,7 +26,6 @@ flutter pub get
 flutter run                                                        # emulator Android: otomatis 10.0.2.2:8082
 flutter run --dart-define=API_BASE_URL=http://192.168.1.10:8082    # HP fisik (IP laptop di Wi-Fi yang sama)
 flutter run -d chrome                                              # Web: otomatis http://localhost:8082
-flutter build apk --dart-define=API_BASE_URL=https://api.contoh.com
 ```
 
 iOS simulator memakai `http://127.0.0.1:8082`. HP fisik **wajib** memakai `API_BASE_URL`.
